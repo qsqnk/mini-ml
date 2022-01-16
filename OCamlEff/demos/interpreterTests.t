@@ -1,4 +1,38 @@
   $ ./interpreterTests.exe <<-EOF
+  > let empty_hd = hd [];;
+  > let non_empty_hd = hd [1; 2; 3];;
+  > let reversed = rev [1; 2; 3];;
+  > let mapped = map (fun x -> x * 2) [1; 2; 3];;
+  > let foldl_sum = fold_left (fun x y -> x + y) 0 [1; 2; 3];;
+  > let foldr_sum = fold_right (fun x y -> x + y) 0 [1; 2; 3];;
+  > let first_tree = take 3 [1; 2; 3; 4; 5];;
+  > let without_first_tree = drop 3 [1; 2; 3; 4; 5];;
+  val empty_hd : '_123 list = []
+  val non_empty_hd : int list = [1]
+  val reversed : int list = [3; 2; 1]
+  val mapped : int list = [2; 4; 6]
+  val foldl_sum : int = 6
+  val foldr_sum : int = 6
+  val first_tree : int list = [1; 2; 3]
+  val without_first_tree : int list = [4; 5]
+  =====================================
+  $ ./interpreterTests.exe <<-EOF
+  > let after_one = succ 1;;
+  > let before_one = pred 1;;
+  > let modulo = mod 12 5;;
+  > let gcd_result = gcd 144 24;;
+  val after_one : int = 2
+  val before_one : int = 0
+  val modulo : int = 2
+  val gcd_result : int = 24
+  =====================================
+  $ ./interpreterTests.exe <<-EOF
+  > let first = fst (1, 5);;
+  > let second = snd (1, 5);;
+  val first : int = 1
+  val second : int = 5
+  =====================================
+  $ ./interpreterTests.exe <<-EOF
   >  effect E: int
   >  ;;
   >  let exp = match perform E with 
@@ -15,7 +49,7 @@
   >    | hd :: tl -> cps_sum (fun x -> k (hd + x)) tl;;
   >  let sum = cps_sum (fun x -> x);;
   >  let sum_of_first_ten = sum [1; 2; 3; 4; 5; 6; 7; 8; 9; 10];;
-  val cps_sum : (int -> '_13) -> int list -> '_13 = <fun>
+  val cps_sum : (int -> '_135) -> int list -> '_135 = <fun>
   val sum : int list -> int = <fun>
   val sum_of_first_ten : int = 55
   =====================================
@@ -46,7 +80,7 @@
   $ ./interpreterTests.exe <<-EOF
   >  let rec fib n k = if n < 2 then k n else fib (n-1) (fun l -> fib (n-2) (fun r -> k (l+r)));;
   >  let ans = fib 6 (fun x -> x);;
-  val fib : int -> (int -> '_19) -> '_19 = <fun>
+  val fib : int -> (int -> '_141) -> '_141 = <fun>
   val ans : int = 8
   =====================================
   $ ./interpreterTests.exe <<-EOF
@@ -54,7 +88,7 @@
   > let f g x = match perform (g(perform (Some 0))) with
   > | effect (Some x) k -> 42;;
   > let ans = f (fun x -> x) 3;;
-  Typing error: (UnificationFailed ((TEffect (TVar 9)), TInt))
+  Typing error: (UnificationFailed ((TEffect (TVar 131)), TInt))
   =====================================
   $ ./interpreterTests.exe <<-EOF
   >  effect E: int -> int
@@ -92,7 +126,7 @@
   >  ;;
   val EmptyListException : int eff = effect
   val list_hd : int list -> int = <fun>
-  val empty : '_5 list = []
+  val empty : '_127 list = []
   val non_empty : int list = [1; 2; 3]
   val safe_list_hd : int list -> int * bool = <fun>
   val empty_hd : int * bool = (0, false)
@@ -127,7 +161,7 @@
   >  let f self n = if n <= 1 then n else self (n - 1) * n
   >  ;;
   >  let fact10 = fix f 10
-  val fix : (('_2 -> '_5) -> '_2 -> '_5) -> '_2 -> '_5 = <fun>
+  val fix : (('_124 -> '_127) -> '_124 -> '_127) -> '_124 -> '_127 = <fun>
   val f : (int -> int) -> int -> int = <fun>
   val fact10 : int = 3628800
   =====================================
@@ -152,14 +186,11 @@
   val mtx3 : int list list = [[1; 3; 3; 12]; [1; 2; 4; 7]; [2; 2; 4; 6]]
   =====================================
   $ ./interpreterTests.exe <<-EOF
-  >  let rec fold f init = function
-  >    | [] -> init
-  >    | hd :: tl -> fold f (f init hd) tl
-  >  ;;
+  >  let fold = fold_left;;
   >  let sum = fold (fun x y -> x + y) 0
   >  ;;
   >  let sum_of_first_three = sum [1; 2; 3]
-  val fold : ('_12 -> '_6 -> '_12) -> '_12 -> '_6 list -> '_12 = <fun>
+  val fold : ('_123 -> '_122 -> '_123) -> '_123 -> '_122 list -> '_123 = <fun>
   val sum : int list -> int = <fun>
   val sum_of_first_three : int = 6
   =====================================

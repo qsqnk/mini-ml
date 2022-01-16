@@ -380,9 +380,15 @@ end
 
 let eval_pp _ code =
   let open Format in
+  let open Parser in
   let open Interpret (InterpreterResult) in
-  match Parser.parse Parser.prog code with
-  | Ok prog ->
+  let open Stdlib in
+  let stdlib_binds =
+    stdlib |> List.map (fun code -> parse prog code |> Result.get_ok) |> List.flatten
+  in
+  match parse prog code with
+  | Ok tree ->
+    let prog = stdlib_binds @ tree in
     (match infer_prog prog with
     | None -> ()
     | Some types ->
@@ -390,6 +396,10 @@ let eval_pp _ code =
         (eval_prog prog)
         ~err:(fun x -> printf "%a\n" pp_error x)
         ~ok:(fun binds ->
-          List.iter pp_value (List.map2 (fun (k, v) (_, t) -> k, t, v) binds types)))
+          let stdlib_binds_sz = List.length stdlib_binds in
+          let prog_binds = Base.List.drop binds stdlib_binds_sz in
+          let prog_types = Base.List.drop types stdlib_binds_sz in
+          List.iter pp_value
+          @@ List.map2 (fun (k, v) (_, t) -> k, t, v) prog_binds prog_types))
   | _ -> Printf.printf "Parse error"
 ;;
