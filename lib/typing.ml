@@ -362,11 +362,6 @@ and infer_exp context = function
       | CBool _ -> Subst.empty, TBool
       | CString _ -> Subst.empty, TString)
   | EOp (op, exp1, exp2) ->
-    (*  
-          Эмуляция аппликации двух выражений к tyexp1 -> tyexp2 -> tyexp3.
-          После проблем с выводом типов выражений слева и справа в бин операции,
-          было решено сделать вот так, чтобы оно просто работало.
-       *)
     let mega_helper tyexp1 tyexp2 tyexp3 =
       let* tv1 = fresh_var in
       let t1 = TArrow (tyexp1, TArrow (tyexp2, tyexp3)) in
